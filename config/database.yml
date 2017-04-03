@@ -1,0 +1,27 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  username: Faraz
+  password:
+
+
+development:
+  <<: *default
+  database: gradient_development
+
+test:
+  <<: *default
+  database: gradient_test
+
+production:
+  <<: *default
+  database: jdev_production
+  username: <%= ENV['USERNAME'] %>
+  password: <%= ENV['PASSWORD'] %>

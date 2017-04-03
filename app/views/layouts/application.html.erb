@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gradient</title>
+    <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	  <meta http-equiv="x-ua-compatible" content="ie=edge">
+	  <title>CSS Gradient</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+  	<header class="main-container">
+		  <div class="container">
+		    <div class="row">
+		      <div class="col-md-12 col-sm-12 col-xs-12">
+		      <div class="header">
+		        <h1 class="heading">CSS GRADIENT</h1>
+		        <h2 class="sub-heading" >Gradient Generator for Linear and Radial Css Color Gradients</h2>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+		</header>
+		<section class="main-container">
+	    <div class="container">
+		    <%= yield %>
+		  </div>
+		</section>
+		<%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+		<script type="text/javascript">
+		  $(function() {
+		    var topColor = "#74e3ec";
+		    var bottomColor = "#c7ffe2";
+		    var position = "top";
+		    var type = "linear";
+		    var colorType = "hex";
+		    $('#btn').hide();
+
+		    $('#cpickerBottom').colorpicker({
+		      color: bottomColor,
+		      input: "input#cpickerTop"
+		    });
+		    $('#cpickerTop').colorpicker({
+		      color: topColor,
+		    });
+
+		    $('#cpickerBottomRGB').colorpicker({
+		      color: bottomColor,
+		      format: "rgb"
+		    });
+		    $('#cpickerTopRGB').colorpicker({
+		      color: topColor,
+		      format: "rgb"
+		    });
+		    
+
+		    $("#hex").click(function(){
+		      colorType = "hex";
+		      topColor = $("#cpickerTopHEX").val();
+		      bottomColor = $("#cpickerBottomHEX").val();
+		      setContent(colorType, type, position, topColor, bottomColor);
+		    });
+
+		    $("#rgb").click(function(){
+		      colorType = "rgb";
+		      topColor = $("#cpickerTopRGB").val();
+		      bottomColor = $("#cpickerBottomRGB").val();
+		      setContent(colorType, type, position, topColor, bottomColor);
+		    });
+
+		    $(".direction").click(function(){
+		      position = $(this).data("value");
+		      setContent(colorType, type, position, topColor, bottomColor);
+		    })
+
+		  
+		    $('#radial').click(function(){
+		      $('#btn').show();
+		      type = "radial";
+		      position = "center";
+		      setContent(colorType, type, position, topColor, bottomColor);
+		    });
+		    $('#linear').click(function(){
+		      $('#btn').hide();
+		      type = "linear";
+		      position = "top";
+		      setContent(colorType, type, position, topColor, bottomColor);
+		    });
+		    $('#cpickerBottom').colorpicker().on('changeColor', function(e) {      
+		      bottomColor = $('#cpickerBottom').colorpicker('getValue');
+		      bottomColorRGB = e.color.toString("rgb");
+		      $('#cpickerBottomRGB').val(bottomColorRGB);
+		      setContent(colorType, type, position, topColor, bottomColor);
+		    });
+
+		    $('#cpickerTop').colorpicker().on('changeColor', function(e) {
+		      // console.log(e.color.toString());
+		      topColor = $('#cpickerTop').colorpicker('getValue');
+		      topColorRGB = e.color.toString("rgb");
+		      $('#cpickerTopRGB').val(topColorRGB);
+		      setContent(colorType, type, position, topColor, bottomColor);
+		    });
+		    var reversePosition;
+		    if (position == "top"){
+		      reversePosition = "to bottom";
+		    }
+		    else if (position == "right"){
+		      reversePosition = "to left"; 
+		    }
+		    else if (position == "bottom"){
+		      reversePosition = "to top"; 
+		    }
+		    else if (position == "left"){
+		      reversePosition = "to right"; 
+		    }
+		    else if (position == "center"){
+		      reversePosition = "ellipse at center"; 
+		    }
+		    else{
+		      reversePosition = position; 
+		    }
+		    var content = "background: "+ topColor +" ; /* Old Browsers */ \n"+
+		    "background: -webkit-"+ type +"-gradient("+ position +","+ topColor +","+ bottomColor +"); /*Safari 5.1-6*/\n"+
+		    "background: -o-"+ type +"-gradient("+ position +","+ topColor +","+ bottomColor +"); /*Opera 11.1-12*/ \n"+
+		    "background: -moz-"+ type +"-gradient("+ position +","+ topColor +","+ bottomColor +"); /*Fx 3.6-15*/ \n"+
+		    "background: "+ type +"-gradient("+ reversePosition +","+ topColor +","+ bottomColor +"); /*Standard*/\n"
+		    $('.preview')[0].setAttribute('style', $('.preview')[0].getAttribute('style') + '; ' + content);
+		    $("#codetocopy")[0].innerHTML = content;
+		  });
+
+		  function setContent(colorType, type, position, topColor, bottomColor){
+		    var reversePosition;
+		    if (position == "top"){
+		      reversePosition = "to bottom";
+		    }
+		    else if (position == "right"){
+		      reversePosition = "to left"; 
+		    }
+		    else if (position == "bottom"){
+		      reversePosition = "to top"; 
+		    }
+		    else if (position == "left"){
+		      reversePosition = "to right"; 
+		    }
+		    else if (position == "center"){
+		      reversePosition = "ellipse at center"; 
+		    }
+		    else{
+		      reversePosition = position; 
+		    }
+		    if (colorType == "rgb"){
+		      topColor = $("#cpickerTopRGB").val();
+		      bottomColor = $("#cpickerBottomRGB").val();
+		    }
+		  	$.ajax({
+		      type: "POST",
+		      url: "/gradient",
+		      data: {gradient_params: {colorType: colorType, gradientType: type, position: position, topColor: topColor, bottomColor: bottomColor}},
+		      success: function(data){
+		      	return false
+		      },
+		      error: function(data){
+		      	return false
+		      }
+		    })
+		  }      
+		</script>  
+  </body>
+</html>
